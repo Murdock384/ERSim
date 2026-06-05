@@ -22,23 +22,6 @@ urgency_label <- function(urgency) {
   ifelse(is.na(lbl), "Unknown", lbl)
 }
 
-#' Sample urgency level for a new patient
-#' @param probs Named or unnamed numeric vector of length 3 summing to 1.
-#'   Order: c(critical, urgent, standard).
-#' @return Integer urgency level (1L, 2L, or 3L).
-#' @keywords internal
-sample_urgency <- function(probs) {
-  sample(c(URGENCY_CRITICAL, URGENCY_URGENT, URGENCY_STANDARD),
-         size = 1L, prob = probs)
-}
-
-#' Draw an inter-arrival time from an exponential distribution
-#' @param rate Arrival rate (patients per time unit).
-#' @return Non-negative numeric inter-arrival time.
-#' @keywords internal
-draw_interarrival <- function(rate) {
-  rexp(1L, rate = rate)
-}
 
 #' Draw a service time given urgency level and service parameters
 #' @param urgency Integer urgency level.
