@@ -58,6 +58,25 @@ server <- function(input, output, session) {
 
     if (!is.null(cfg)) {
       current_config(cfg)
+      session$sendCustomMessage(
+        "configApplied",
+        list(
+          arrival_rate = input$arrival_rate,
+          sim_duration = input$sim_duration,
+          n_doctors = input$n_doctors,
+          n_nurses = input$n_nurses,
+          seed = if (is.null(seed_val)) "Random" else as.character(seed_val),
+          prob_critical = input$prob_critical,
+          prob_urgent = input$prob_urgent,
+          prob_standard = input$prob_standard,
+          svc_crit_mean = input$svc_crit_mean,
+          svc_crit_sd = input$svc_crit_sd,
+          svc_urg_mean = input$svc_urg_mean,
+          svc_urg_sd = input$svc_urg_sd,
+          svc_std_mean = input$svc_std_mean,
+          svc_std_sd = input$svc_std_sd
+        )
+      )
       showNotification("Configuration applied.", type = "message")
     }
   })

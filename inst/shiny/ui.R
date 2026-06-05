@@ -571,22 +571,7 @@ dashboardPage(
     "))),
 
     tags$script(HTML("
-      $(document).on('click', '#btn_apply_config', function() {
-        function valueOf(id) {
-          var el = $('#' + id);
-          return el.length ? el.val() : '';
-        }
-
-        function numberOf(id) {
-          var value = parseFloat(valueOf(id));
-          return Number.isFinite(value) ? value : 0;
-        }
-
-        function integerOf(id) {
-          var value = parseInt(valueOf(id), 10);
-          return Number.isFinite(value) ? value : 0;
-        }
-
+      Shiny.addCustomMessageHandler('configApplied', function(config) {
         function item(label, value) {
           return '<div class=\"config-summary-item\">' +
                  '<div class=\"config-summary-label\">' + label + '</div>' +
@@ -594,17 +579,16 @@ dashboardPage(
                  '</div>';
         }
 
-        var seed = valueOf('seed');
         var urgency = [
-          'Critical ' + integerOf('prob_critical') + '%',
-          'Urgent ' + integerOf('prob_urgent') + '%',
-          'Standard ' + integerOf('prob_standard') + '%'
+          'Critical ' + config.prob_critical + '%',
+          'Urgent ' + config.prob_urgent + '%',
+          'Standard ' + config.prob_standard + '%'
         ].join(' / ');
 
         var serviceTimes = [
-          'Critical ' + numberOf('svc_crit_mean') + '+/-' + numberOf('svc_crit_sd'),
-          'Urgent ' + numberOf('svc_urg_mean') + '+/-' + numberOf('svc_urg_sd'),
-          'Standard ' + numberOf('svc_std_mean') + '+/-' + numberOf('svc_std_sd')
+          'Critical ' + config.svc_crit_mean + '+/-' + config.svc_crit_sd,
+          'Urgent ' + config.svc_urg_mean + '+/-' + config.svc_urg_sd,
+          'Standard ' + config.svc_std_mean + '+/-' + config.svc_std_sd
         ].join(' min, ');
 
         $('#applied_config_summary')
@@ -612,10 +596,10 @@ dashboardPage(
           .html(
             '<div class=\"config-summary-title\">Applied Configuration</div>' +
             '<div class=\"config-summary-grid\">' +
-              item('Arrival rate', numberOf('arrival_rate') + ' patients/min') +
-              item('Duration', integerOf('sim_duration') + ' min') +
-              item('Staff', integerOf('n_doctors') + ' doctors, ' + integerOf('n_nurses') + ' nurses') +
-              item('Seed', seed ? seed : 'Random') +
+              item('Arrival rate', config.arrival_rate + ' patients/min') +
+              item('Duration', config.sim_duration + ' min') +
+              item('Staff', config.n_doctors + ' doctors, ' + config.n_nurses + ' nurses') +
+              item('Seed', config.seed) +
               item('Urgency mix', urgency) +
               item('Service times', serviceTimes) +
             '</div>'
