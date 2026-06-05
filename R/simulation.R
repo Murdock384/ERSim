@@ -30,7 +30,6 @@ SimulationEngine <- R6::R6Class(
 
     # ── Private helpers ────────────────────────────────────────────────────
 
-    # Find first available doctor
     find_available_doctor = function() {
       for (r in private$doctors) {
         if (r$is_available()) return(r)
@@ -38,7 +37,6 @@ SimulationEngine <- R6::R6Class(
       NULL
     },
 
-    # Find first available nurse
     find_available_nurse = function() {
       for (r in private$nurses) {
         if (r$is_available()) return(r)
@@ -46,7 +44,6 @@ SimulationEngine <- R6::R6Class(
       NULL
     },
 
-    # Schedule an event by adding a row to event_list
     schedule_event = function(type, time, patient_id = NA_character_,
                               urgency_level = NA_integer_) {
       private$event_list <- rbind(
@@ -121,7 +118,6 @@ SimulationEngine <- R6::R6Class(
       pid <- event$patient_id
       patient <- private$patient_store[[pid]]
 
-      # Find the resource treating this patient
       treating_resource <- NULL
       for (r in private$all_resources) {
         if (!r$is_available() &&
@@ -172,7 +168,6 @@ SimulationEngine <- R6::R6Class(
       private$serve_patient(patient, free_doctor, event$time)
     },
 
-    # Build the resource utilisation log after simulation completes
     build_resource_log = function() {
       rows <- lapply(private$all_resources, function(r) {
         data.frame(
@@ -186,7 +181,6 @@ SimulationEngine <- R6::R6Class(
       do.call(rbind, rows)
     },
 
-    # Build the patient log data.frame from patient_store
     build_patient_log = function() {
       rows <- lapply(private$patient_store, function(p) p$to_list())
       df   <- do.call(rbind, lapply(rows, as.data.frame,
