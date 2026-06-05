@@ -13,12 +13,6 @@ URGENCY_LABELS <- c(
   "3" = "Standard"
 )
 
-URGENCY_COLOURS <- c(
-  "Critical" = "#e74c3c",
-  "Urgent"   = "#f39c12",
-  "Standard" = "#2ecc71"
-)
-
 #' Convert urgency integer to label
 #' @param urgency Integer urgency level (1, 2, or 3).
 #' @return Character label.
