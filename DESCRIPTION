@@ -1,0 +1,34 @@
+Package: ERsim
+Type: Package
+Title: Emergency Room Queue Simulation
+Version: 0.1.0
+Authors@R: c(
+    person("Mevin", "Biju", role = c("aut"), comment = "486097"),
+    person("David", "Abraham", role = c("aut", "cre"), email = "david@example.com", comment = "487868"),
+    person("Akhil", "Ambalapurath Ajith", role = c("aut"), comment = "487806")
+  )
+Description: A discrete event simulation package for modelling patient flow in a
+    hospital emergency room. Patients arrive randomly, are triaged into priority
+    categories, wait in a priority queue, and are served by configurable medical
+    staff resources. Tracks key performance indicators including waiting time,
+    queue length, patients served, and resource utilisation. Includes an
+    interactive Shiny dashboard for configuring and visualising simulations.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.1.0)
+Imports:
+    R6 (>= 2.5.0),
+    Rcpp (>= 1.0.0),
+    shiny (>= 1.7.0),
+    shinydashboard (>= 0.7.0),
+    ggplot2 (>= 3.4.0),
+    dplyr (>= 1.1.0),
+    tidyr (>= 1.3.0),
+    scales (>= 1.2.0),
+    DT (>= 0.27)
+LinkingTo:
+    Rcpp
+Config/roxygen2/version: 8.0.0
