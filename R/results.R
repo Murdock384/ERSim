@@ -1,11 +1,10 @@
-#' @title SimResults — Simulation Results S3 Class
-#' @description S3 class holding the output of a completed simulation run.
-
 #' Construct a SimResults Object (internal)
 #'
-#' @param patient_log data.frame. One row per completed patient.
+#' @param patient_log data.frame. One row per patient arrival.
 #' @param kpis Named list produced by \code{\link{compute_kpis}}.
 #' @param queue_over_time data.frame produced by \code{\link{compute_queue_over_time}}.
+#' @param queue_ts_analysis Named list produced by
+#'   \code{\link{compute_queue_ts}}.
 #' @param resource_log data.frame. One row per resource with utilisation data.
 #' @param config The \code{SimConfig} used for this run.
 #' @param elapsed_sec Numeric. Wall-clock seconds taken to run the simulation.

@@ -2,12 +2,11 @@
 % Please edit documentation in R/simulation.R
 \name{SimulationEngine}
 \alias{SimulationEngine}
-\title{SimulationEngine R6 Class}
+\title{SimulationEngine}
 \description{
-Discrete event simulation engine for the ER model. Orchestrates
-patient arrivals, queue management, resource assignment, and departure
-events. The inner event-processing loop is delegated to an Rcpp function
-(\code{process_events_cpp}) for performance.
+The central R6 class for running ER simulations. Accepts a
+\code{\link{new_sim_config}} object, runs a discrete event simulation, and
+returns a \code{SimResults} S3 object.
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -22,6 +21,12 @@ events. The inner event-processing loop is delegated to an Rcpp function
 \if{html}{\out{<a id="method-SimulationEngine-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-SimulationEngine-initialize}{}}}
 \subsection{\code{SimulationEngine$new()}}{
+  Create a new SimulationEngine.
+Run the Simulation
+
+Generates all arrival events up-front using the Rcpp helper
+\code{generate_arrivals_cpp}, then processes them in chronological
+order alongside departure events via the main R6 event loop.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{SimulationEngine$new(config)}
@@ -30,12 +35,7 @@ events. The inner event-processing loop is delegated to an Rcpp function
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{config}}{A \code{SimConfig} object from \code{\link{new_sim_config}}.
-Run the Simulation
-
-Generates all arrival events up-front using the Rcpp helper
-\code{generate_arrivals_cpp}, then processes them in chronological
-order alongside departure events via the main R6 event loop.}
+      \item{\code{config}}{A \code{SimConfig} object from \code{\link{new_sim_config}}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -79,6 +79,13 @@ not been called yet.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{SimulationEngine$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
     \if{html}{\out{</div>}}
   }
 }

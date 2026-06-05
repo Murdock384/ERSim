@@ -4,24 +4,24 @@
 
 #' Compute Key Performance Indicators from a Patient Log
 #'
-#' Takes the \code{patient_log} data.frame produced by a completed simulation
-#' and returns a named list of KPIs computed entirely with vectorized
-#' operations.
+#' Takes the \code{patient_log} data.frame produced by a simulation run and
+#' returns a named list of KPIs computed entirely with vectorized operations.
 #'
 #' @param patient_log A data.frame with at least the columns: \code{wait_time},
 #'   \code{urgency_level}, \code{urgency_label}, \code{service_time},
-#'   \code{arrival_time}, \code{end_service_time}.
+#'   \code{arrival_time}, \code{start_service_time}, \code{end_service_time}.
 #'
 #' @return A named list with the following elements:
 #' \describe{
-#'   \item{n_patients}{Total patients who completed treatment.}
-#'   \item{mean_wait}{Mean wait time across all patients (minutes).}
+#'   \item{n_patients}{Total patients served, defined as patients whose
+#'     service started with a doctor or nurse.}
+#'   \item{mean_wait}{Mean wait time for patients to be served.}
 #'   \item{median_wait}{Median wait time (minutes).}
 #'   \item{p95_wait}{95th percentile wait time (minutes).}
 #'   \item{max_wait}{Maximum wait time (minutes).}
 #'   \item{mean_wait_by_urgency}{Named numeric vector: mean wait per urgency.}
 #'   \item{mean_service_time}{Mean service/treatment duration (minutes).}
-#'   \item{throughput_per_hour}{Patients completing treatment per hour.}
+#'   \item{throughput_per_hour}{Patients served per hour.}
 #'   \item{wait_by_urgency_df}{data.frame with per-urgency wait statistics.}
 #' }
 #' @importFrom dplyr group_by summarise mutate arrange n
@@ -31,21 +31,17 @@ compute_kpis <- function(patient_log) {
     stop("`patient_log` must be a data.frame.", call. = FALSE)
   }
   required_cols <- c("wait_time", "urgency_level", "urgency_label",
-                     "service_time", "arrival_time", "end_service_time")
+                     "service_time", "arrival_time", "start_service_time",
+                     "end_service_time")
   missing_cols <- setdiff(required_cols, names(patient_log))
   if (length(missing_cols) > 0L) {
     stop("patient_log is missing columns: ",
          paste(missing_cols, collapse = ", "), call. = FALSE)
   }
 
-  # Two subsets:
-  #   - waited:    all patients with a known wait_time (served + still in queue)
-  #                Used for wait-time KPIs — unserved patients inflate the average
-  #                correctly, as they represent the worst patient experience.
-  #   - completed: only patients who reached a resource (have end_service_time)
-  #                Used for service time, throughput, and n_patients served.
-  waited    <- patient_log[!is.na(patient_log$wait_time), ]
-  completed <- patient_log[!is.na(patient_log$end_service_time), ]
+  # "Served" means the patient reached a doctor or nurse and service started.
+  served <- patient_log[!is.na(patient_log$start_service_time), ]
+  waited <- served[!is.na(served$wait_time), ]
 
   if (nrow(waited) == 0L) {
     return(list(
@@ -63,7 +59,7 @@ compute_kpis <- function(patient_log) {
 
   wt <- waited$wait_time
 
-  # Per-urgency wait stats — dplyr pipeline (includes unserved patients)
+  # Per-urgency wait stats for patients who were served.
   lvl_order <- c("Critical", "Urgent", "Standard")
   wait_by_urgency_df <- waited |>
     dplyr::mutate(urgency_label = factor(urgency_label, levels = lvl_order)) |>
@@ -82,19 +78,19 @@ compute_kpis <- function(patient_log) {
   urgency_means <- setNames(wait_by_urgency_df$mean_wait,
                             wait_by_urgency_df$urgency_label)
 
-  # Throughput: patients per hour, based on simulation span
-  time_span_min <- max(completed$end_service_time, na.rm = TRUE) -
-                   min(completed$arrival_time,      na.rm = TRUE)
-  throughput <- if (time_span_min > 0) nrow(completed) / (time_span_min / 60) else NA_real_
+  # Throughput: patients served per hour, based on observed span.
+  time_span_min <- max(served$start_service_time, na.rm = TRUE) -
+                   min(served$arrival_time,       na.rm = TRUE)
+  throughput <- if (time_span_min > 0) nrow(served) / (time_span_min / 60) else NA_real_
 
   list(
-    n_patients           = nrow(completed),
+    n_patients           = nrow(served),
     mean_wait            = mean(wt,   na.rm = TRUE),
     median_wait          = median(wt, na.rm = TRUE),
     p95_wait             = unname(quantile(wt, 0.95, na.rm = TRUE)),
     max_wait             = max(wt,    na.rm = TRUE),
     mean_wait_by_urgency = urgency_means,
-    mean_service_time    = mean(completed$service_time, na.rm = TRUE),
+    mean_service_time    = mean(served$service_time, na.rm = TRUE),
     throughput_per_hour  = throughput,
     wait_by_urgency_df   = wait_by_urgency_df
   )
@@ -105,7 +101,7 @@ compute_kpis <- function(patient_log) {
 #' Given a patient log, reconstructs the queue length at each event
 #' (arrival or service-start) using vectorized cumulative sum operations.
 #'
-#' @param patient_log data.frame from a completed simulation.
+#' @param patient_log data.frame from a simulation run.
 #' @return A data.frame with columns \code{time} and \code{queue_length}.
 #' @export
 compute_queue_over_time <- function(patient_log) {
@@ -156,6 +152,16 @@ compute_queue_over_time <- function(patient_log) {
 #' @importFrom stats filter lm coef acf quantile
 #' @export
 compute_queue_ts <- function(queue_over_time, roll_window = 10L) {
+  if (!is.data.frame(queue_over_time) ||
+      !all(c("time", "queue_length") %in% names(queue_over_time))) {
+    stop("`queue_over_time` must contain `time` and `queue_length` columns.",
+         call. = FALSE)
+  }
+  roll_window <- as.integer(roll_window)
+  if (length(roll_window) != 1L || is.na(roll_window) || roll_window <= 0L) {
+    stop("`roll_window` must be a positive integer.", call. = FALSE)
+  }
+
   empty <- list(
     rolling_mean = queue_over_time,
     trend_slope  = NA_real_,
@@ -169,7 +175,7 @@ compute_queue_ts <- function(queue_over_time, roll_window = 10L) {
   ql <- queue_over_time$queue_length
 
   # Rolling mean via stats::filter (base R, no extra dependencies)
-  k   <- min(as.integer(roll_window), length(ql))
+  k   <- min(roll_window, length(ql))
   raw <- stats::filter(ql, rep(1.0 / k, k), sides = 1)
   rolling_df <- data.frame(
     time         = queue_over_time$time,
@@ -185,8 +191,11 @@ compute_queue_ts <- function(queue_over_time, roll_window = 10L) {
                  else                    "Stable"
 
   # Autocorrelation at lags 1-5 (suppresses the base plot)
-  acf_obj  <- acf(ql, lag.max = 5L, plot = FALSE)
-  acf_vals <- setNames(as.numeric(acf_obj$acf[-1L]), paste0("lag", 1:5))
+  acf_obj <- acf(ql, lag.max = 5L, plot = FALSE)
+  acf_raw <- as.numeric(acf_obj$acf[-1L])
+  acf_vals <- rep(NA_real_, 5L)
+  acf_vals[seq_along(acf_raw)] <- acf_raw
+  acf_vals <- setNames(acf_vals, paste0("lag", 1:5))
 
   # Peak queue length
   peak_idx <- which.max(ql)

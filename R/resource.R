@@ -1,14 +1,12 @@
-#' @title Resource R6 Class
-#' @description Represents a medical staff resource (doctor or nurse) in the
-#'   ER simulation.
-#' @importFrom R6 R6Class
-
 #' Resource
 #'
 #' An R6 class representing a single medical staff member. Tracks availability,
 #' the patient currently being treated, and cumulative busy time for utilisation
 #' reporting.
 #'
+#' @param id Character. Unique resource identifier, e.g. "Doctor-1".
+#' @param role Character. "doctor" or "nurse".
+#' @importFrom R6 R6Class
 #' @export
 Resource <- R6::R6Class(
   classname = "Resource",
@@ -100,6 +98,7 @@ Resource <- R6::R6Class(
     },
 
     #' @description Print a summary of the resource state.
+    #' @param ... Ignored.
     print = function(...) {
       cat(sprintf(
         "<Resource %s [%s] | %s | Busy time: %.1f min>\n",

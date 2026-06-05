@@ -19,7 +19,7 @@ A data.frame with columns:
 \describe{
 \item{type}{Character "ARRIVAL" for every row.}
 \item{time}{Numeric arrival time (minutes from simulation start).}
-\item{patient_id}{NA_character_ — filled in by R when processed.}
+\item{patient_id}{NA_character_ -- filled in by R when processed.}
 \item{urgency_level}{Integer 1, 2, or 3.}
 }
 }

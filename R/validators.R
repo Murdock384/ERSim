@@ -1,11 +1,4 @@
-#' @title Defensive Programming — Input Validators
-#' @description All input validation functions for ERsim. Each validator either
-#'   returns invisibly on success or throws an informative error via
-#'   \code{stop()}. This makes them composable: call several validators in
-#'   sequence and the first failure aborts with a clear message.
-#' @keywords internal
-
-# ── Generic scalar validators ───────────────────────────────────────────────
+# Generic scalar validators
 
 #' Assert a value is a single positive number
 #' @param x Value to test.
@@ -68,7 +61,7 @@ assert_string <- function(x, name = deparse(substitute(x))) {
   invisible(x)
 }
 
-# ── Probability vector validator ─────────────────────────────────────────────
+# Probability vector validator
 
 #' Assert a vector is a valid probability distribution
 #' @param probs Numeric vector. Must be length 3, all non-negative, sum to 1.
@@ -93,7 +86,7 @@ assert_probability_vector <- function(probs,
   invisible(probs)
 }
 
-# ── Service parameter validator ──────────────────────────────────────────────
+# Service parameter validator
 
 #' Assert service_params has valid structure for all 3 urgency levels
 #' @param service_params List with keys "1", "2", "3". Each element must be a
@@ -121,7 +114,7 @@ assert_service_params <- function(service_params) {
   invisible(service_params)
 }
 
-# ── Top-level SimConfig validator ────────────────────────────────────────────
+# Top-level SimConfig validator
 
 #' Validate a SimConfig object
 #'

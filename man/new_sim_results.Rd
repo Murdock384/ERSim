@@ -2,7 +2,7 @@
 % Please edit documentation in R/results.R
 \name{new_sim_results}
 \alias{new_sim_results}
-\title{SimResults — Simulation Results S3 Class}
+\title{Construct a SimResults Object (internal)}
 \usage{
 new_sim_results(
   patient_log,
@@ -15,11 +15,14 @@ new_sim_results(
 )
 }
 \arguments{
-\item{patient_log}{data.frame. One row per completed patient.}
+\item{patient_log}{data.frame. One row per patient arrival.}
 
 \item{kpis}{Named list produced by \code{\link{compute_kpis}}.}
 
 \item{queue_over_time}{data.frame produced by \code{\link{compute_queue_over_time}}.}
+
+\item{queue_ts_analysis}{Named list produced by
+\code{\link{compute_queue_ts}}.}
 
 \item{resource_log}{data.frame. One row per resource with utilisation data.}
 
@@ -31,8 +34,6 @@ new_sim_results(
 A \code{SimResults} S3 object.
 }
 \description{
-S3 class holding the output of a completed simulation run, with
-print, summary, and plot methods.
 Construct a SimResults Object (internal)
 }
 \keyword{internal}

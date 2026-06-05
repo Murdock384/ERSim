@@ -16,7 +16,7 @@ using namespace Rcpp;
 //' \describe{
 //'   \item{type}{Character "ARRIVAL" for every row.}
 //'   \item{time}{Numeric arrival time (minutes from simulation start).}
-//'   \item{patient_id}{NA_character_ — filled in by R when processed.}
+//'   \item{patient_id}{NA_character_ -- filled in by R when processed.}
 //'   \item{urgency_level}{Integer 1, 2, or 3.}
 //' }
 //' @export
@@ -91,8 +91,8 @@ DataFrame generate_arrivals_cpp(double arrival_rate,
 
 //' Compute Summary Statistics Over a Numeric Vector (Vectorized C++)
 //'
-//' Fast computation of mean, median, and specified quantile for a numeric
-//' vector. Used internally to accelerate KPI calculations on large patient logs.
+//' Computes mean, median, and a specified quantile for a numeric vector. This
+//' exported helper is useful for demonstrations and direct vector summaries.
 //'
 //' @param x       NumericVector. Input values (e.g., wait times).
 //' @param quantile_p Double. Quantile to compute, between 0 and 1. Default 0.95.
@@ -124,7 +124,7 @@ NumericVector summary_stats_cpp(NumericVector x, double quantile_p = 0.95) {
     median_val = sorted[n / 2];
   }
 
-  // Quantile (type 7 — R default)
+  // Quantile (type 7, R default)
   double h     = (n - 1) * quantile_p;
   int    h_lo  = (int)std::floor(h);
   double frac  = h - h_lo;

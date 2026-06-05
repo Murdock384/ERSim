@@ -9,19 +9,20 @@ compute_kpis(patient_log)
 \arguments{
 \item{patient_log}{A data.frame with at least the columns: \code{wait_time},
 \code{urgency_level}, \code{urgency_label}, \code{service_time},
-\code{arrival_time}, \code{end_service_time}.}
+\code{arrival_time}, \code{start_service_time}, \code{end_service_time}.}
 }
 \value{
 A named list with the following elements:
 \describe{
-\item{n_patients}{Total patients who completed treatment.}
-\item{mean_wait}{Mean wait time across all patients (minutes).}
+\item{n_patients}{Total patients served, defined as patients whose
+service started with a doctor or nurse.}
+\item{mean_wait}{Mean wait time for patients to be served.}
 \item{median_wait}{Median wait time (minutes).}
 \item{p95_wait}{95th percentile wait time (minutes).}
 \item{max_wait}{Maximum wait time (minutes).}
 \item{mean_wait_by_urgency}{Named numeric vector: mean wait per urgency.}
 \item{mean_service_time}{Mean service/treatment duration (minutes).}
-\item{throughput_per_hour}{Patients completing treatment per hour.}
+\item{throughput_per_hour}{Patients served per hour.}
 \item{wait_by_urgency_df}{data.frame with per-urgency wait statistics.}
 }
 }
@@ -30,7 +31,6 @@ Computes summary statistics from a patient log data.frame using
 vectorized R operations (no explicit loops).
 Compute Key Performance Indicators from a Patient Log
 
-Takes the \code{patient_log} data.frame produced by a completed simulation
-and returns a named list of KPIs computed entirely with vectorized
-operations.
+Takes the \code{patient_log} data.frame produced by a simulation run and
+returns a named list of KPIs computed entirely with vectorized operations.
 }

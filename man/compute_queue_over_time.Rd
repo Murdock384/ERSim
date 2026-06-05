@@ -7,7 +7,7 @@
 compute_queue_over_time(patient_log)
 }
 \arguments{
-\item{patient_log}{data.frame from a completed simulation.}
+\item{patient_log}{data.frame from a simulation run.}
 }
 \value{
 A data.frame with columns \code{time} and \code{queue_length}.

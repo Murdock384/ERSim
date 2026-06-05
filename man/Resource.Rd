@@ -2,10 +2,11 @@
 % Please edit documentation in R/resource.R
 \name{Resource}
 \alias{Resource}
-\title{Resource R6 Class}
+\title{Resource}
 \description{
-Represents a medical staff resource (doctor or nurse) in the
-ER simulation.
+An R6 class representing a single medical staff member. Tracks availability,
+the patient currently being treated, and cumulative busy time for utilisation
+reporting.
 }
 \section{Public fields}{
   \if{html}{\out{<div class="r6-fields">}}
@@ -145,6 +146,13 @@ Compute utilisation fraction over the simulation duration
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Resource$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
     \if{html}{\out{</div>}}
   }
 }

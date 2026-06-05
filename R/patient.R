@@ -1,12 +1,13 @@
-#' @title Patient R6 Class
-#' @description Represents a single patient entity in the ER simulation.
-#' @importFrom R6 R6Class
-
 #' Patient
 #'
 #' An R6 class representing a patient in the emergency room simulation.
 #' Tracks arrival, urgency, service timing, and wait time.
 #'
+#' @param id Character. Unique patient identifier, e.g. "P00001".
+#' @param arrival_time Numeric. Arrival time in simulation minutes.
+#' @param urgency_level Integer. 1 = Critical, 2 = Urgent, 3 = Standard.
+#' @param service_time Numeric. Sampled treatment duration in minutes.
+#' @importFrom R6 R6Class
 #' @export
 Patient <- R6::R6Class(
   classname = "Patient",
@@ -83,6 +84,7 @@ Patient <- R6::R6Class(
     },
 
     #' @description Print a concise summary of the patient.
+    #' @param ... Ignored.
     print = function(...) {
       cat(sprintf(
         "<Patient %s | Urgency: %s | Arrived: %.1f min | Wait: %s>\n",

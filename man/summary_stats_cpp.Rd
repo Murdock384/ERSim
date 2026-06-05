@@ -16,6 +16,6 @@ A named NumericVector with elements: \code{mean}, \code{median},
 \code{quantile}.
 }
 \description{
-Fast computation of mean, median, and specified quantile for a numeric
-vector. Used internally to accelerate KPI calculations on large patient logs.
+Computes mean, median, and a specified quantile for a numeric vector. This
+exported helper is useful for demonstrations and direct vector summaries.
 }

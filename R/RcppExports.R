@@ -16,18 +16,18 @@
 #' \describe{
 #'   \item{type}{Character "ARRIVAL" for every row.}
 #'   \item{time}{Numeric arrival time (minutes from simulation start).}
-#'   \item{patient_id}{NA_character_ — filled in by R when processed.}
+#'   \item{patient_id}{NA_character_ -- filled in by R when processed.}
 #'   \item{urgency_level}{Integer 1, 2, or 3.}
 #' }
 #' @export
 generate_arrivals_cpp <- function(arrival_rate, sim_duration, urgency_probs) {
-    .Call('_ERsim_generate_arrivals_cpp', PACKAGE = 'ERsim', arrival_rate, sim_duration, urgency_probs)
+    .Call(`_ERsim_generate_arrivals_cpp`, arrival_rate, sim_duration, urgency_probs)
 }
 
 #' Compute Summary Statistics Over a Numeric Vector (Vectorized C++)
 #'
-#' Fast computation of mean, median, and specified quantile for a numeric
-#' vector. Used internally to accelerate KPI calculations on large patient logs.
+#' Computes mean, median, and a specified quantile for a numeric vector. This
+#' exported helper is useful for demonstrations and direct vector summaries.
 #'
 #' @param x       NumericVector. Input values (e.g., wait times).
 #' @param quantile_p Double. Quantile to compute, between 0 and 1. Default 0.95.
@@ -36,6 +36,6 @@ generate_arrivals_cpp <- function(arrival_rate, sim_duration, urgency_probs) {
 #'   \code{quantile}.
 #' @export
 summary_stats_cpp <- function(x, quantile_p = 0.95) {
-    .Call('_ERsim_summary_stats_cpp', PACKAGE = 'ERsim', x, quantile_p)
+    .Call(`_ERsim_summary_stats_cpp`, x, quantile_p)
 }
 

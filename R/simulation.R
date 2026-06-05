@@ -1,16 +1,11 @@
-#' @title SimulationEngine R6 Class
-#' @description Discrete event simulation engine for the ER model. Orchestrates
-#'   patient arrivals, queue management, resource assignment, and departure
-#'   events. The inner event-processing loop is delegated to an Rcpp function
-#'   (\code{process_events_cpp}) for performance.
-#' @importFrom R6 R6Class
-
 #' SimulationEngine
 #'
 #' The central R6 class for running ER simulations. Accepts a
 #' \code{\link{new_sim_config}} object, runs a discrete event simulation, and
 #' returns a \code{SimResults} S3 object.
 #'
+#' @param config A \code{SimConfig} object from \code{\link{new_sim_config}}.
+#' @importFrom R6 R6Class
 #' @export
 SimulationEngine <- R6::R6Class(
   classname = "SimulationEngine",
@@ -28,7 +23,7 @@ SimulationEngine <- R6::R6Class(
     current_time   = 0,
     results        = NULL,
 
-    # ── Private helpers ────────────────────────────────────────────────────
+    # Private helpers
 
     find_available_doctor = function() {
       for (r in private$doctors) {
@@ -203,7 +198,7 @@ SimulationEngine <- R6::R6Class(
       # Unserved patients: clear the pre-generated (never used) service time.
       df$service_time[in_queue] <- NA_real_
 
-      # ── Escalation tracking ─────────────────────────────────────────────
+      # Escalation tracking
       # Mirror the same BASE/RATES as PriorityQueue$dequeue() so the tier
       # shown here is consistent with how the queue actually ordered them.
       BASE  <- c("1" = 10.0, "2" = 20.0, "3" = 40.0)
@@ -238,9 +233,7 @@ SimulationEngine <- R6::R6Class(
 
   public = list(
 
-    #' Create a new SimulationEngine
-    #'
-    #' @param config A \code{SimConfig} object from \code{\link{new_sim_config}}.
+    #' @description Create a new SimulationEngine.
     initialize = function(config) {
       validate_sim_config(config)
       private$config        <- config
@@ -273,7 +266,7 @@ SimulationEngine <- R6::R6Class(
 
       start_time <- proc.time()["elapsed"]
 
-      # ── Generate arrival events via Rcpp ─────────────────────────────────
+      # Generate arrival events via Rcpp
       arrivals_df <- generate_arrivals_cpp(
         arrival_rate  = cfg$arrival_rate,
         sim_duration  = cfg$sim_duration,
@@ -285,7 +278,7 @@ SimulationEngine <- R6::R6Class(
         private$event_list <- rbind(private$event_list, arrivals_df)
       }
 
-      # ── Main event loop ───────────────────────────────────────────────────
+      # Main event loop
       while (nrow(private$event_list) > 0L) {
         # Pop earliest event
         idx   <- which.min(private$event_list$time)
@@ -303,7 +296,7 @@ SimulationEngine <- R6::R6Class(
         }
       }
 
-      # ── Build results ─────────────────────────────────────────────────────
+      # Build results
       patient_log       <- private$build_patient_log()
       kpis              <- compute_kpis(patient_log)
       queue_over_time   <- compute_queue_over_time(patient_log)
@@ -330,6 +323,7 @@ SimulationEngine <- R6::R6Class(
     get_results = function() private$results,
 
     #' @description Print engine state.
+    #' @param ... Ignored.
     print = function(...) {
       cfg <- private$config
       cat(sprintf(

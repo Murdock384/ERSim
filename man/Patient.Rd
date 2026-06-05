@@ -2,9 +2,10 @@
 % Please edit documentation in R/patient.R
 \name{Patient}
 \alias{Patient}
-\title{Patient R6 Class}
+\title{Patient}
 \description{
-Represents a single patient entity in the ER simulation.
+An R6 class representing a patient in the emergency room simulation.
+Tracks arrival, urgency, service timing, and wait time.
 }
 \section{Public fields}{
   \if{html}{\out{<div class="r6-fields">}}
@@ -95,6 +96,13 @@ Return patient data as a named list (for logging)
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Patient$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
     \if{html}{\out{</div>}}
   }
 }

@@ -2,20 +2,17 @@
 % Please edit documentation in R/queue.R
 \name{PriorityQueue}
 \alias{PriorityQueue}
-\title{PriorityQueue R6 Class}
+\title{PriorityQueue}
 \description{
-A priority queue that orders patients by urgency level
-(1 = Critical first) and, within the same urgency, by arrival time (FIFO).
+An R6 class implementing a priority queue for \code{Patient} objects.
+Patients are dequeued by effective urgency tier, then by when they entered
+that tier, then original urgency and arrival time. This preserves FIFO
+behavior among patients who are currently in the same urgency tier.
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{size}}{Integer. Number of patients currently in the queue.
-Create a new empty PriorityQueue
-Add a patient to the queue
-
-The queue is re-sorted after insertion using a stable sort so that
-arrival-time ordering is preserved within each urgency band.}
+    \item{\code{size}}{Integer. Number of patients currently in the queue.}
   }
   \if{html}{\out{</div>}}
 }
@@ -39,6 +36,11 @@ arrival-time ordering is preserved within each urgency band.}
 \if{html}{\out{<a id="method-PriorityQueue-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-PriorityQueue-initialize}{}}}
 \subsection{\code{PriorityQueue$new()}}{
+  Create a new empty PriorityQueue.
+Add a patient to the queue
+
+The queue is re-sorted after insertion using a stable sort so that
+arrival-time ordering is preserved within each urgency band.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{PriorityQueue$new()}
@@ -198,8 +200,8 @@ Check whether a specific patient is still waiting in the queue
     Logical.
 Remove and return a specific patient by ID
 
-Used by the escalation handler to pull a named patient from the queue
-and assign them directly to a doctor.
+Utility method for callers that need to remove a known patient from the
+queue without applying the usual dynamic priority ordering.
   }
 }
 
@@ -248,6 +250,13 @@ urgency_label, arrival_time.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{PriorityQueue$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored.}
+    }
     \if{html}{\out{</div>}}
   }
 }

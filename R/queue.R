@@ -1,8 +1,3 @@
-#' @title PriorityQueue R6 Class
-#' @description A priority queue that orders patients by urgency level
-#'   (1 = Critical first) and, within the same urgency, by arrival time (FIFO).
-#' @importFrom R6 R6Class
-
 #' PriorityQueue
 #'
 #' An R6 class implementing a priority queue for \code{Patient} objects.
@@ -10,6 +5,7 @@
 #' that tier, then original urgency and arrival time. This preserves FIFO
 #' behavior among patients who are currently in the same urgency tier.
 #'
+#' @importFrom R6 R6Class
 #' @export
 PriorityQueue <- R6::R6Class(
   classname = "PriorityQueue",
@@ -36,7 +32,7 @@ PriorityQueue <- R6::R6Class(
 
   public = list(
 
-    #' Create a new empty PriorityQueue
+    #' @description Create a new empty PriorityQueue.
     initialize = function() {
       private$.queue <- list()
     },
@@ -76,9 +72,9 @@ PriorityQueue <- R6::R6Class(
       # Base priorities and decay rates indexed by urgency_level (1/2/3).
       # Critical never decays (rate=0) — always highest priority.
       # Urgent and Standard decay at the same rate (1.0/min):
-      #   Urgent   (20): reaches Critical threshold (10) after 10 min waiting
-      #   Standard (40): reaches Urgent threshold   (20) after 20 min waiting
-      #                  reaches Critical threshold (10) after 30 min waiting
+      # Urgent   (20): reaches Critical threshold (10) after 10 min waiting
+      # Standard (40): reaches Urgent threshold   (20) after 20 min waiting
+      #                Critical threshold (10) after 30 min waiting
       BASE  <- c("1" = 10.0, "2" = 20.0, "3" = 40.0)
       RATES <- c("1" =  0.0, "2" =  1.0, "3" =  1.0)
 
@@ -214,8 +210,8 @@ PriorityQueue <- R6::R6Class(
 
     #' Remove and return a specific patient by ID
     #'
-    #' Used by the escalation handler to pull a named patient from the queue
-    #' and assign them directly to a doctor.
+    #' Utility method for callers that need to remove a known patient from the
+    #' queue without applying the usual dynamic priority ordering.
     #'
     #' @param patient_id Character. The patient ID to dequeue.
     #' @return The \code{Patient} R6 object, or \code{NULL} if not found.
@@ -254,6 +250,7 @@ PriorityQueue <- R6::R6Class(
     },
 
     #' @description Print a summary of the queue state.
+    #' @param ... Ignored.
     print = function(...) {
       cat(sprintf("<PriorityQueue | %d patient(s) waiting>\n", self$size))
       if (!self$is_empty()) {

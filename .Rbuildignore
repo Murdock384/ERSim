@@ -1,0 +1,4 @@
+^.*[.]Rcheck$
+^src/.*[.]dll$
+^src/.*[.]o$
+^src/.*[.]so$

@@ -2,7 +2,7 @@
 #' @description Internal helper functions shared across the package.
 #' @keywords internal
 
-# ── Urgency level constants ────────────────────────────────────────────────
+# Urgency level constants
 URGENCY_CRITICAL  <- 1L
 URGENCY_URGENT    <- 2L
 URGENCY_STANDARD  <- 3L

@@ -2,7 +2,7 @@
 % Please edit documentation in R/validators.R
 \name{assert_positive_number}
 \alias{assert_positive_number}
-\title{Defensive Programming — Input Validators}
+\title{Assert a value is a single positive number}
 \usage{
 assert_positive_number(x, name = deparse(substitute(x)))
 }
@@ -12,16 +12,6 @@ assert_positive_number(x, name = deparse(substitute(x)))
 \item{name}{Name to use in the error message.}
 }
 \description{
-All input validation functions for ERsim. Each validator either
-returns invisibly on success or throws an informative error via
-\code{stop()}. This makes them composable: call several validators in
-sequence and the first failure aborts with a clear message.
+Assert a value is a single positive number
 }
-\keyword{Assert}
-\keyword{a}
 \keyword{internal}
-\keyword{is}
-\keyword{number}
-\keyword{positive}
-\keyword{single}
-\keyword{value}
