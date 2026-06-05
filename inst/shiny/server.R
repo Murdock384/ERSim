@@ -18,16 +18,21 @@ server <- function(input, output, session) {
 
   output$urgency_sum_warn <- renderText({
     total <- input$prob_critical + input$prob_urgent + input$prob_standard
-    if (abs(total - 100) > 0.5) {
-      paste0("Warning: probabilities sum to ", total, "% (must equal 100%)")
+    if (total != 100) {
+      paste0("\u26a0 Probabilities sum to ", total, "% — must equal 100%")
     } else {
       ""
     }
   })
 
+  observe({
+    total <- input$prob_critical + input$prob_urgent + input$prob_standard
+    session$sendCustomMessage("setApplyBtnState", list(enabled = (total == 100)))
+  })
+
   observeEvent(input$btn_apply_config, {
     total <- input$prob_critical + input$prob_urgent + input$prob_standard
-    if (abs(total - 100) > 0.5) {
+    if (total != 100) {
       showNotification("Urgency probabilities must sum to 100%.", type = "error")
       return()
     }

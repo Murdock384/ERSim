@@ -605,6 +605,14 @@ dashboardPage(
             '</div>'
           );
       });
+
+      Shiny.addCustomMessageHandler('setApplyBtnState', function(msg) {
+        var btn = document.getElementById('btn_apply_config');
+        if (!btn) return;
+        btn.disabled = !msg.enabled;
+        btn.style.opacity = msg.enabled ? '' : '0.4';
+        btn.style.cursor  = msg.enabled ? '' : 'not-allowed';
+      });
     ")),
 
     tabItems(
